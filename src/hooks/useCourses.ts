@@ -1,28 +1,71 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Course, CourseModule } from '@/types/api';
 import { courseService } from '@/services/courseService';
 
 export const useCourses = () => {
-  return useQuery({
-    queryKey: ['courses'],
-    queryFn: courseService.getAllCourses,
-  });
+  const [data, setData] = useState<Course[]>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+
+  useEffect(() => {
+    courseService
+      .getAllCourses()
+      .then(setData)
+      .catch(setError)
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  return { data, isLoading, error };
 };
 
 export const useCourse = (id: string) => {
-  return useQuery({
-    queryKey: ['course', id],
-    queryFn: () => courseService.getCourseById(id),
-    enabled: !!id,
-  });
+  const [data, setData] = useState<Course>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    courseService
+      .getCourseById(id)
+      .then(setData)
+      .catch(setError)
+      .finally(() => setIsLoading(false));
+  }, [id]);
+
+  return { data, isLoading, error };
 };
 
-export const useCreateCourse = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: courseService.createCourse,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
-    },
-  });
+export const useModules = () => {
+  const [data, setData] = useState<CourseModule[]>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+
+  useEffect(() => {
+    courseService
+      .getAllModules()
+      .then(setData)
+      .catch(setError)
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  return { data, isLoading, error };
+};
+
+export const useModule = (id: number) => {
+  const [data, setData] = useState<CourseModule>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    courseService
+      .getModuleById(id)
+      .then(setData)
+      .catch(setError)
+      .finally(() => setIsLoading(false));
+  }, [id]);
+
+  return { data, isLoading, error };
 };

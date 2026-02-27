@@ -1,37 +1,26 @@
+import {
+  AdminCreateCourse,
+  AdminCreateModule,
+  Course,
+  CourseModule,
+} from '@/types/api';
 import api from './api';
-import { Course, CourseModule } from '@/types/api';
 
 export const courseService = {
-  // دریافت همه دوره‌ها
-  getAllCourses: async () => {
-    const response = await api.get<Course[]>('/courses/');
-    return response.data;
-  },
+  getAllCourses: async () => (await api.get<Course[]>('/courses/')).data,
+  getCourseById: async (id: string) => (await api.get<Course>(`/courses/${id}/`)).data,
+  getAllModules: async () => (await api.get<CourseModule[]>('/modules/')).data,
+  getModuleById: async (id: number) => (await api.get<CourseModule>(`/modules/${id}/`)).data,
 
-  // دریافت یک دوره با جزئیات
-  getCourseById: async (id: string) => {
-    const response = await api.get<Course>(`/courses/${id}/`);
-    return response.data;
-  },
+  adminListCourses: async () => (await api.get<Course[]>('/admin/courses/')).data,
+  adminCreateCourse: async (payload: AdminCreateCourse) => (await api.post<Course>('/admin/courses/', payload)).data,
+  adminUpdateCourse: async (id: string, payload: Partial<AdminCreateCourse>) => (await api.put<Course>(`/admin/courses/${id}/`, payload)).data,
+  adminPatchCourse: async (id: string, payload: Partial<AdminCreateCourse>) => (await api.patch<Course>(`/admin/courses/${id}/`, payload)).data,
+  adminDeleteCourse: async (id: string) => api.delete(`/admin/courses/${id}/`),
 
-  // دریافت ماژول‌های یک دوره
-  getCourseModules: async (courseId: string) => {
-    const response = await api.get<CourseModule[]>(`/modules/?course=${courseId}`);
-    return response.data;
-  },
-
-  // مدیریت دوره‌ها (برای ادمین)
-  createCourse: async (courseData: Partial<Course>) => {
-    const response = await api.post<Course>('/admin/courses/', courseData);
-    return response.data;
-  },
-
-  updateCourse: async (id: string, courseData: Partial<Course>) => {
-    const response = await api.put<Course>(`/admin/courses/${id}/`, courseData);
-    return response.data;
-  },
-
-  deleteCourse: async (id: string) => {
-    await api.delete(`/admin/courses/${id}/`);
-  },
+  adminListModules: async () => (await api.get<CourseModule[]>('/admin/modules/')).data,
+  adminCreateModule: async (payload: AdminCreateModule) => (await api.post<CourseModule>('/admin/modules/', payload)).data,
+  adminUpdateModule: async (id: number, payload: Partial<AdminCreateModule>) => (await api.put<CourseModule>(`/admin/modules/${id}/`, payload)).data,
+  adminPatchModule: async (id: number, payload: Partial<AdminCreateModule>) => (await api.patch<CourseModule>(`/admin/modules/${id}/`, payload)).data,
+  adminDeleteModule: async (id: number) => api.delete(`/admin/modules/${id}/`),
 };
