@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { usePathname } from 'next/navigation';
 import { AuthContext } from '../context/AuthContext';
 
@@ -9,48 +9,47 @@ const navItems = [
   { href: '/', label: 'خانه' },
   { href: '/courses', label: 'دوره‌ها' },
   { href: '/labs', label: 'آزمایشگاه‌ها' },
-  { href: '/admin', label: 'داشبورد ادمین' },
+  { href: '/admin', label: 'ادمین' },
 ];
 
 export default function Header() {
   const auth = useContext(AuthContext);
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[var(--border)] bg-white/90 backdrop-blur">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-2xl font-black" style={{ color: 'var(--primary-dark)' }}>
-          LabCraft
+    <header className="border-b border-slate-200 bg-white">
+      <nav className="container mx-auto flex items-center justify-between px-4 py-4">
+        <Link href="/" className="text-2xl font-bold text-indigo-700">
+          LabEx
         </Link>
-
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="flex items-center gap-4 text-sm">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-lg px-3 py-2 text-sm transition ${pathname === item.href ? 'bg-[var(--surface-soft)] font-bold' : 'hover:bg-[var(--surface-soft)]'}`}
+              className={pathname === item.href ? 'font-bold text-indigo-700' : 'text-slate-600 hover:text-indigo-600'}
             >
               {item.label}
             </Link>
           ))}
-        </div>
-
-        <div className="hidden items-center gap-2 md:flex">
           {auth?.isAuthenticated ? (
             <>
-              <span className="rounded-full bg-[var(--surface-soft)] px-3 py-1 text-xs">{auth.user?.email}</span>
-              <button onClick={auth.logout} className="rounded-lg bg-black px-3 py-2 text-xs text-white" type="button">
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs">{auth.user?.email}</span>
+              <button
+                onClick={auth.logout}
+                className="rounded-md bg-red-500 px-3 py-1 text-white hover:bg-red-600"
+                type="button"
+              >
                 خروج
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" className="rounded-lg px-3 py-2 text-sm hover:bg-[var(--surface-soft)]">
+              <Link href="/login" className="text-slate-600 hover:text-indigo-600">
                 ورود
               </Link>
-              <Link href="/register" className="rounded-lg bg-[var(--primary)] px-3 py-2 text-sm font-semibold text-white">
-                شروع رایگان
+              <Link href="/register" className="rounded-md bg-indigo-600 px-3 py-1 text-white hover:bg-indigo-700">
+                ثبت‌نام
               </Link>
             </>
           )}

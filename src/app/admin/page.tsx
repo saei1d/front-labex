@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { courseService } from '@/services/courseService';
 import { labService } from '@/services/labService';
-import PageLoader from '../components/PageLoader';
 
 interface AdminStats {
   courses: number;
@@ -15,7 +14,7 @@ interface AdminStats {
 }
 
 export default function AdminPage() {
-  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [stats, setStats] = useState<AdminStats>({ courses: 0, modules: 0, labs: 0, sections: 0, tasks: 0, rules: 0 });
   const [examples, setExamples] = useState<Record<string, unknown>>({});
 
   useEffect(() => {
@@ -37,29 +36,34 @@ export default function AdminPage() {
         tasks: tasks.length,
         rules: rules.length,
       });
-      setExamples({ courses: courses.slice(0, 1), labs: labs.slice(0, 1), tasks: tasks.slice(0, 1) });
+
+      setExamples({ courses: courses.slice(0, 2), labs: labs.slice(0, 2), tasks: tasks.slice(0, 2) });
     };
 
-    void load();
+    load();
   }, []);
 
-  if (!stats) return <PageLoader label="در حال بارگذاری داده‌های ادمین..." />;
+  const cards = [
+    { title: 'Courses', count: stats.courses },
+    { title: 'Modules', count: stats.modules },
+    { title: 'Labs', count: stats.labs },
+    { title: 'Sections', count: stats.sections },
+    { title: 'Tasks', count: stats.tasks },
+    { title: 'Rules', count: stats.rules },
+  ];
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-black">داشبورد مدیریت محتوا</h1>
+      <h1 className="text-3xl font-bold">پنل مدیریت API</h1>
       <div className="grid gap-4 md:grid-cols-3">
-        {Object.entries(stats).map(([k, v]) => (
-          <div key={k} className="rounded-2xl border border-[var(--border)] bg-white p-5 shadow-sm">
-            <p className="text-sm text-[var(--text-muted)]">{k}</p>
-            <p className="mt-1 text-3xl font-black">{v}</p>
+        {cards.map((card) => (
+          <div key={card.title} className="rounded-xl border bg-white p-5">
+            <p className="text-sm text-slate-500">{card.title}</p>
+            <p className="text-3xl font-bold">{card.count}</p>
           </div>
         ))}
       </div>
-      <section className="rounded-2xl border border-[var(--border)] bg-black p-4 text-xs text-white">
-        <h3 className="mb-2 text-sm font-bold">نمونه خروجی API</h3>
-        <pre className="overflow-auto">{JSON.stringify(examples, null, 2)}</pre>
-      </section>
+      <pre className="overflow-auto rounded-xl bg-slate-900 p-4 text-xs text-slate-100">{JSON.stringify(examples, null, 2)}</pre>
     </div>
   );
 }

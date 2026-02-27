@@ -4,7 +4,6 @@ import { useLabs } from '@/hooks/useLabs';
 import { useModule } from '@/hooks/useCourses';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import PageLoader from '@/app/components/PageLoader';
 
 export default function ModuleDetailsPage() {
   const params = useParams<{ id: string }>();
@@ -14,28 +13,30 @@ export default function ModuleDetailsPage() {
 
   const moduleLabs = labs?.filter((lab) => lab.module === moduleId) ?? [];
 
-  if (moduleLoading || labsLoading) return <PageLoader />;
-  if (!module) return <div className="rounded-xl bg-red-50 p-4 text-red-700">ماژول پیدا نشد.</div>;
+  if (moduleLoading || labsLoading) return <div>در حال بارگذاری...</div>;
+  if (!module) return <div className="text-red-600">ماژول پیدا نشد.</div>;
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl border border-[var(--border)] bg-white p-6 shadow-sm">
-        <h1 className="text-3xl font-black">{module.title}</h1>
-        <p className="mt-2 text-sm text-[var(--text-muted)]">شناسه دوره: {module.course}</p>
-      </section>
+      <div className="rounded-xl border bg-white p-6">
+        <h1 className="text-3xl font-bold">{module.title}</h1>
+        <p className="mt-2 text-slate-600">شناسه دوره: {module.course}</p>
+      </div>
 
-      <section className="rounded-3xl border border-[var(--border)] bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-2xl font-black">آزمایشگاه‌های این ماژول</h2>
-        <div className="grid gap-3 md:grid-cols-2">
+      <div className="rounded-xl border bg-white p-6">
+        <h2 className="mb-4 text-xl font-semibold">آزمایشگاه‌های این ماژول</h2>
+        <div className="space-y-3">
           {moduleLabs.map((lab) => (
-            <Link key={lab.id} href={`/labs/${lab.id}`} className="rounded-xl border border-[var(--border)] p-4 transition hover:bg-[var(--surface-soft)]">
-              <p className="font-semibold">{lab.title}</p>
-              <p className="text-xs text-[var(--text-muted)]">{lab.difficulty}</p>
+            <Link key={lab.id} href={`/labs/${lab.id}`} className="block rounded border p-4 hover:bg-slate-50">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">{lab.title}</span>
+                <span className="text-sm text-slate-500">{lab.difficulty}</span>
+              </div>
             </Link>
           ))}
-          {moduleLabs.length === 0 && <p className="text-sm text-[var(--text-muted)]">لابی برای این ماژول تعریف نشده است.</p>}
+          {moduleLabs.length === 0 && <p className="text-sm text-slate-500">لابی برای این ماژول تعریف نشده است.</p>}
         </div>
-      </section>
+      </div>
     </div>
   );
 }

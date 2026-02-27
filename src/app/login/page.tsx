@@ -23,19 +23,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-3xl border border-[var(--border)] bg-white p-6 shadow-sm">
-      <h1 className="mb-1 text-2xl font-black">ورود</h1>
-      <p className="mb-4 text-sm text-[var(--text-muted)]">به حساب کاربری خود وارد شوید</p>
+    <div className="mx-auto max-w-md rounded-xl border bg-white p-6">
+      <h1 className="mb-4 text-2xl font-bold">ورود</h1>
       <form className="space-y-3" onSubmit={submit}>
-        <input className="w-full rounded-xl border border-[var(--border)] p-3" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ایمیل" />
-        <input className="w-full rounded-xl border border-[var(--border)] p-3" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="رمز عبور" />
+        <input className="w-full rounded border p-2" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ایمیل" />
+        <input
+          className="w-full rounded border p-2"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="رمز عبور"
+        />
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <button className="w-full rounded-xl bg-[var(--primary)] p-3 font-semibold text-white" type="submit">
+        <button className="w-full rounded bg-indigo-600 p-2 text-white" type="submit">
           ورود
         </button>
       </form>
-      <Link href="/register" className="mt-4 block text-sm font-semibold text-[var(--primary-dark)]">
-        حساب ندارید؟ ثبت‌نام کنید
+      <Link href="/register" className="mt-3 block text-sm text-indigo-600">
+        حساب ندارید؟ ثبت‌نام
       </Link>
     </div>
   );

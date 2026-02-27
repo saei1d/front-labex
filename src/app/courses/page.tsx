@@ -7,21 +7,20 @@ import PageLoader from '../components/PageLoader';
 export default function CoursesPage() {
   const { data: courses, isLoading, error } = useCourses();
 
-  if (isLoading) return <PageLoader />;
-  if (error) return <div className="rounded-xl bg-red-50 p-4 text-red-700">خطا در دریافت اطلاعات دوره‌ها</div>;
+  if (isLoading) return <div className="text-center">در حال بارگذاری...</div>;
+  if (error) return <div className="text-center text-red-600">خطا در دریافت اطلاعات دوره‌ها</div>;
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-black">کاتالوگ دوره‌های آموزشی</h1>
+    <div>
+      <h1 className="mb-6 text-3xl font-bold">دوره‌های آموزشی</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {courses?.map((course) => (
-          <Link href={`/courses/${course.id}`} key={course.id} className="group rounded-2xl border border-[var(--border)] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-            <p className="mb-2 text-xs font-semibold text-[var(--primary-dark)]">{course.level}</p>
-            <h2 className="mb-2 text-xl font-bold">{course.title}</h2>
-            <p className="line-clamp-3 text-sm text-[var(--text-muted)]">{course.description}</p>
-            <div className="mt-4 flex items-center justify-between text-sm">
+          <Link href={`/courses/${course.id}`} key={course.id} className="rounded-xl border bg-white p-5 shadow-sm">
+            <h2 className="mb-2 text-xl font-semibold">{course.title}</h2>
+            <p className="mb-4 line-clamp-3 text-sm text-slate-600">{course.description}</p>
+            <div className="flex items-center justify-between text-sm">
+              <span>{course.level}</span>
               <span>{course.modules?.length ?? 0} ماژول</span>
-              <span className="font-semibold group-hover:text-[var(--primary-dark)]">مشاهده ←</span>
             </div>
           </Link>
         ))}
