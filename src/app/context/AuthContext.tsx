@@ -1,13 +1,19 @@
 'use client';
 
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
-import { jwtDecode } from "jwt-decode";
+import React, { createContext, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { authService } from '@/services/authService';
+import { ACCESS_TOKEN_KEY } from '@/services/api';
 
 interface User {
-  id: string;
-  email: string;
-  // اضافه کن اگر نیاز بود
+  id?: string;
+  email?: string;
+}
+
+interface JwtPayload {
+  user_id?: string;
+  email?: string;
+  sub?: string;
 }
 
 interface AuthContextType {
@@ -16,50 +22,52 @@ interface AuthContextType {
   register: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
+  isAuthenticated: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+const decodeUser = (token: string): User => {
+  const payload = jwtDecode<JwtPayload>(token);
+  return {
+    id: payload.user_id ?? payload.sub,
+    email: payload.email,
+  };
+};
 
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      try {
-        const decoded: any = jwtDecode(token);
-        setUser({ id: decoded.user_id, email: decoded.email });
-      } catch (error) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-      }
-    }
-    setIsLoading(false);
-  }, []);
+const getInitialUser = (): User | null => {
+  if (typeof window === 'undefined') return null;
+  const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+  if (!token) return null;
+  try {
+    return decodeUser(token);
+  } catch {
+    authService.logout();
+    return null;
+  }
+};
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(getInitialUser);
 
   const login = async (email: string, password: string) => {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/`, { email, password });
-    localStorage.setItem('accessToken', res.data.access);
-    localStorage.setItem('refreshToken', res.data.refresh);
-    const decoded: any = jwtDecode(res.data.access);
-    setUser({ id: decoded.user_id, email: decoded.email });
+    const res = await authService.login({ email, password });
+    setUser(decodeUser(res.access));
   };
 
   const register = async (email: string, password: string) => {
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register/`, { email, password, password2: password });
-    await login(email, password); // بعد از ثبت‌نام، لاگین کن
+    await authService.register({ email, password, password2: password });
+    await login(email, password);
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    authService.logout();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isLoading: false, isAuthenticated: Boolean(user) }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}

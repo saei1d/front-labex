@@ -1,42 +1,34 @@
-import api from './api';
+import api, { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, clearTokens } from './api';
 import { LoginRequest, LoginResponse, RegisterRequest, TokenRefreshResponse } from '@/types/api';
 
 export const authService = {
-  // ثبت‌نام
   register: async (data: RegisterRequest) => {
     const response = await api.post('/auth/register/', data);
     return response.data;
   },
 
-  // ورود
   login: async (data: LoginRequest) => {
     const response = await api.post<LoginResponse>('/auth/login/', data);
-    
-    // ذخیره توکن‌ها
-    if (response.data.access) {
-      localStorage.setItem('access_token', response.data.access);
-      localStorage.setItem('refresh_token', response.data.refresh);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(ACCESS_TOKEN_KEY, response.data.access);
+      localStorage.setItem(REFRESH_TOKEN_KEY, response.data.refresh);
     }
-    
     return response.data;
   },
 
-  // خروج
   logout: () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    clearTokens();
   },
 
-  // رفرش توکن
   refreshToken: async (refreshToken: string) => {
     const response = await api.post<TokenRefreshResponse>('/auth/refresh/', {
-      refresh: refreshToken
+      refresh: refreshToken,
     });
     return response.data;
   },
 
-  // بررسی وضعیت احراز هویت
   isAuthenticated: () => {
-    return !!localStorage.getItem('access_token');
+    if (typeof window === 'undefined') return false;
+    return Boolean(localStorage.getItem(ACCESS_TOKEN_KEY));
   },
 };
