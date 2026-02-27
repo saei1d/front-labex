@@ -54,7 +54,39 @@ export default function Header() {
             </>
           )}
         </div>
+
+        <button className="rounded-lg border px-3 py-2 md:hidden" onClick={() => setMobileOpen((v) => !v)} type="button">
+          منو
+        </button>
       </nav>
+
+      {mobileOpen && (
+        <div className="border-t border-[var(--border)] bg-white px-4 py-4 md:hidden">
+          <div className="flex flex-col gap-2">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href} className="rounded-lg px-3 py-2 hover:bg-[var(--surface-soft)]" onClick={() => setMobileOpen(false)}>
+                {item.label}
+              </Link>
+            ))}
+            <div className="mt-2 border-t pt-2">
+              {auth?.isAuthenticated ? (
+                <button onClick={auth.logout} className="w-full rounded-lg bg-black px-3 py-2 text-white" type="button">
+                  خروج
+                </button>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <Link href="/login" className="rounded-lg border px-3 py-2 text-center" onClick={() => setMobileOpen(false)}>
+                    ورود
+                  </Link>
+                  <Link href="/register" className="rounded-lg bg-[var(--primary)] px-3 py-2 text-center text-white" onClick={() => setMobileOpen(false)}>
+                    ثبت‌نام
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

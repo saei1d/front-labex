@@ -2,6 +2,7 @@
 
 import { useCourses } from '@/hooks/useCourses';
 import Link from 'next/link';
+import PageLoader from '../components/PageLoader';
 
 export default function CoursesPage() {
   const { data: courses, isLoading, error } = useCourses();
