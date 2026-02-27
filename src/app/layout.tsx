@@ -1,35 +1,21 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Inter } from 'next/font/google';
+import type { Metadata } from 'next';
+import './globals.css';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const inter = Inter({ subsets: ['latin'] });
-
-export const metadata = {
-  title: 'LabEx',
-  description: 'Hands-on learning platform',
+export const metadata: Metadata = {
+  title: 'LabCraft | Professional Learning Platform',
+  description: 'A modern Persian-first hands-on learning platform',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="fa" dir="rtl">
+      <body>
         <AuthProvider>
           <Header />
-          <main className="container mx-auto p-4">{children}</main>
+          <main className="mx-auto min-h-[calc(100vh-220px)] w-full max-w-6xl px-4 py-6">{children}</main>
           <Footer />
         </AuthProvider>
       </body>

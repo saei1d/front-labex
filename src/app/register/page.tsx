@@ -1,27 +1,42 @@
+'use client';
+
+import { AuthContext } from '@/app/context/AuthContext';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useContext, useState } from 'react';
 
-async function getCourses() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch');
-  return res.json();
-}
+export default function RegisterPage() {
+  const auth = useContext(AuthContext);
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-export default async function Home() {
-  const courses = await getCourses();
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await auth?.register(email, password);
+      router.push('/courses');
+    } catch {
+      setError('ثبت‌نام ناموفق بود.');
+    }
+  };
 
   return (
-    <div>
-      <h1 className="text-3xl mb-6">Courses</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {courses.map((course: any) => (
-          <div key={course.id} className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-bold">{course.title}</h2>
-            <p className="text-gray-600">{course.description}</p>
-            <p className="text-sm text-blue-500">{course.level}</p>
-            <Link href={`/courses/${course.id}`} className="text-blue-500">View Details</Link>
-          </div>
-        ))}
-      </div>
+    <div className="mx-auto max-w-md rounded-3xl border border-[var(--border)] bg-white p-6 shadow-sm">
+      <h1 className="mb-1 text-2xl font-black">ثبت‌نام</h1>
+      <p className="mb-4 text-sm text-[var(--text-muted)]">ساخت حساب جدید برای شروع دوره‌ها</p>
+      <form className="space-y-3" onSubmit={submit}>
+        <input className="w-full rounded-xl border border-[var(--border)] p-3" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ایمیل" />
+        <input className="w-full rounded-xl border border-[var(--border)] p-3" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="رمز عبور" />
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <button className="w-full rounded-xl bg-[var(--primary)] p-3 font-semibold text-white" type="submit">
+          ایجاد حساب
+        </button>
+      </form>
+      <Link href="/login" className="mt-4 block text-sm font-semibold text-[var(--primary-dark)]">
+        قبلا ثبت‌نام کرده‌اید؟ ورود
+      </Link>
     </div>
   );
 }

@@ -1,59 +1,27 @@
-
 'use client';
 
 import { useCourses } from '@/hooks/useCourses';
 import Link from 'next/link';
+import PageLoader from '../components/PageLoader';
 
 export default function CoursesPage() {
   const { data: courses, isLoading, error } = useCourses();
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-red-600 p-8">
-        خطا در دریافت اطلاعات
-      </div>
-    );
-  }
+  if (isLoading) return <PageLoader />;
+  if (error) return <div className="rounded-xl bg-red-50 p-4 text-red-700">خطا در دریافت اطلاعات دوره‌ها</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8" dir="rtl">
-      <h1 className="text-3xl font-bold mb-8 text-center">دوره‌های آموزشی</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-6">
+      <h1 className="text-3xl font-black">کاتالوگ دوره‌های آموزشی</h1>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {courses?.map((course) => (
-          <Link href={`/courses/${course.id}`} key={course.id}>
-            <div className="border rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6 cursor-pointer bg-white">
-              <h2 className="text-xl font-semibold mb-2">{course.title}</h2>
-              <p className="text-gray-600 mb-4 line-clamp-2">{course.description}</p>
-              
-              <div className="flex items-center justify-between">
-                <span className={`
-                  px-3 py-1 rounded-full text-sm
-                  ${course.level === 'beginner' ? 'bg-green-100 text-green-700' : ''}
-                  ${course.level === 'intermediate' ? 'bg-yellow-100 text-yellow-700' : ''}
-                  ${course.level === 'advanced' ? 'bg-red-100 text-red-700' : ''}
-                `}>
-                  {course.level === 'beginner' && 'مبتدی'}
-                  {course.level === 'intermediate' && 'متوسط'}
-                  {course.level === 'advanced' && 'پیشرفته'}
-                </span>
-                
-                <span className="text-sm text-gray-500">
-                  {course.modules?.length || 0} ماژول
-                </span>
-              </div>
-              
-              <div className="mt-4 text-sm text-gray-400">
-                {new Date(course.created_at).toLocaleDateString('fa-IR')}
-              </div>
+          <Link href={`/courses/${course.id}`} key={course.id} className="group rounded-2xl border border-[var(--border)] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+            <p className="mb-2 text-xs font-semibold text-[var(--primary-dark)]">{course.level}</p>
+            <h2 className="mb-2 text-xl font-bold">{course.title}</h2>
+            <p className="line-clamp-3 text-sm text-[var(--text-muted)]">{course.description}</p>
+            <div className="mt-4 flex items-center justify-between text-sm">
+              <span>{course.modules?.length ?? 0} ماژول</span>
+              <span className="font-semibold group-hover:text-[var(--primary-dark)]">مشاهده ←</span>
             </div>
           </Link>
         ))}
