@@ -1,25 +1,38 @@
 @import "tailwindcss";
+@import "antd/dist/reset.css";
 
 :root {
-  --bg: #f7f4ea;
-  --surface: #ffffff;
-  --surface-soft: #f1eee2;
-  --primary: #59ac77;
-  --primary-dark: #3d7b54;
-  --text: #121212;
-  --text-muted: #4b5563;
-  --border: #e5e7eb;
+  --background: #ffffff;
+  --foreground: #1a1625;
+  --card: #ffffff;
+  --card-foreground: #1a1625;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f7ff;
+  --secondary-foreground: #1a1625;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #f59e0b;
+  --accent-foreground: #ffffff;
+  --border: rgba(99, 102, 241, 0.15);
+  --ring: #6366f1;
 }
 
 * {
   box-sizing: border-box;
+  border-color: var(--border);
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
 }
 
 body {
-  margin: 0;
-  background: radial-gradient(circle at top, #fcfaf3 0%, var(--bg) 60%);
-  color: var(--text);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-iransans), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 a {
@@ -27,8 +40,9 @@ a {
   text-decoration: none;
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+input,
+button,
+textarea,
+select {
+  font: inherit;
 }

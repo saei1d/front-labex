@@ -24,43 +24,44 @@ export default function SessionPage() {
 
   const stop = async () => {
     await sessionService.stopSession(sessionId);
-    setMessage('Session متوقف شد.');
-    loadSession();
+    setMessage('جلسه با موفقیت متوقف شد.');
+    void loadSession();
   };
 
   const validate = async (taskId: number) => {
     await sessionService.validateTask(sessionId, taskId);
-    setMessage(`اعتبارسنجی تسک ${taskId} ارسال شد.`);
+    setMessage(`درخواست اعتبارسنجی برای تسک ${taskId} ارسال شد.`);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border bg-white p-6">
-        <h1 className="text-2xl font-bold">Session: {sessionId}</h1>
-        <pre className="mt-3 overflow-auto rounded bg-slate-100 p-3 text-xs">{JSON.stringify(session, null, 2)}</pre>
-        <button onClick={stop} type="button" className="mt-4 rounded bg-red-600 px-4 py-2 text-white">
-          توقف Session
+    <div className="container mx-auto space-y-8 px-6 py-16 lg:px-8">
+      <section className="rounded-3xl border bg-white p-8">
+        <h1 className="text-3xl font-bold">جلسه: {sessionId}</h1>
+        <pre className="mt-4 overflow-auto rounded-2xl bg-[#0f172a] p-4 text-xs text-slate-200">{JSON.stringify(session, null, 2)}</pre>
+        <button onClick={stop} type="button" className="mt-4 rounded-xl bg-red-600 px-4 py-2 text-white transition hover:bg-red-700">
+          توقف جلسه
         </button>
-      </div>
+      </section>
 
-      <div className="rounded-xl border bg-white p-6">
-        <h2 className="mb-4 text-xl font-semibold">Validate تسک‌ها</h2>
+      <section className="rounded-3xl border bg-white p-8">
+        <h2 className="mb-4 text-xl font-semibold">اعتبارسنجی تسک‌ها</h2>
         <div className="grid gap-3 md:grid-cols-2">
           {tasks?.map((task) => (
             <button
               key={task.id}
               type="button"
               onClick={() => validate(task.id)}
-              className="rounded border p-3 text-right hover:bg-slate-50"
+              className="rounded-2xl border p-4 text-left transition-colors hover:bg-[#f8f7ff]"
             >
               <p className="font-medium">{task.title}</p>
-              <p className="text-xs text-slate-500">ID: {task.id}</p>
+              <p className="text-xs text-[#6b7280]">شناسه: {task.id}</p>
             </button>
           ))}
+          {!tasks?.length && <p className="text-sm text-[#6b7280]">تسکی پیدا نشد.</p>}
         </div>
-      </div>
+      </section>
 
-      {message && <div className="rounded bg-green-100 p-3 text-green-800">{message}</div>}
+      {message && <div className="rounded-2xl border border-green-200 bg-green-50 p-3 text-green-700">{message}</div>}
     </div>
   );
 }

@@ -40,30 +40,38 @@ export default function AdminPage() {
       setExamples({ courses: courses.slice(0, 2), labs: labs.slice(0, 2), tasks: tasks.slice(0, 2) });
     };
 
-    load();
+    void load();
   }, []);
 
   const cards = [
-    { title: 'Courses', count: stats.courses },
-    { title: 'Modules', count: stats.modules },
-    { title: 'Labs', count: stats.labs },
-    { title: 'Sections', count: stats.sections },
-    { title: 'Tasks', count: stats.tasks },
-    { title: 'Rules', count: stats.rules },
+    { title: 'دوره‌ها', count: stats.courses },
+    { title: 'ماژول‌ها', count: stats.modules },
+    { title: 'آزمایشگاه‌ها', count: stats.labs },
+    { title: 'بخش‌ها', count: stats.sections },
+    { title: 'تسک‌ها', count: stats.tasks },
+    { title: 'قوانین اعتبارسنجی', count: stats.rules },
   ];
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">پنل مدیریت API</h1>
+    <div className="container mx-auto space-y-8 px-6 py-16 lg:px-8">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold">داشبورد ادمین</h1>
+        <p className="text-[#6b7280]">آمار زنده موجودیت‌های API.</p>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-3">
         {cards.map((card) => (
-          <div key={card.title} className="rounded-xl border bg-white p-5">
-            <p className="text-sm text-slate-500">{card.title}</p>
-            <p className="text-3xl font-bold">{card.count}</p>
+          <div key={card.title} className="rounded-2xl border bg-white p-6 shadow-sm">
+            <p className="text-sm text-[#6b7280]">{card.title}</p>
+            <p className="mt-2 text-4xl font-bold text-[#6366f1]">{card.count}</p>
           </div>
         ))}
       </div>
-      <pre className="overflow-auto rounded-xl bg-slate-900 p-4 text-xs text-slate-100">{JSON.stringify(examples, null, 2)}</pre>
+
+      <div className="rounded-3xl border bg-[#0f172a] p-6">
+        <h2 className="mb-4 text-lg font-semibold text-white">نمونه خروجی‌ها</h2>
+        <pre className="overflow-auto text-xs text-slate-200">{JSON.stringify(examples, null, 2)}</pre>
+      </div>
     </div>
   );
 }
